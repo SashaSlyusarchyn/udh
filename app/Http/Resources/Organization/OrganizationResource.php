@@ -16,7 +16,7 @@ class OrganizationResource extends Resource
     {
         return [
             'id' => $this->id,
-            'nam' => $this->name
+            'name' => $this->name
         ];
     }
 }

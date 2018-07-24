@@ -19,6 +19,7 @@ class CreateFilesTable extends Migration
             $table->uuid('users_id');
             $table->string('name');
             $table->string('hash');
+            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->foreign('users_id')->references('id')->on('users');
         });

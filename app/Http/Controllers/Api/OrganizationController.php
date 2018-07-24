@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Api\Organization\OrganizationStorePostRequest;
+use App\Http\Requests\Api\Organization\OrganizationUpdatePutRequest;
+use App\Http\Resources\Organization\OrganizationResource;
+use App\Organization;
 use App\Http\Controllers\Controller;
 
 class OrganizationController extends Controller
@@ -14,7 +17,12 @@ class OrganizationController extends Controller
      */
     public function index()
     {
-        //
+        //TODO: pagination
+//        $organizations = Organization::paginate(config('api.organizations_pp'));
+        $organizations = Organization::all();
+        $this->data['organizations'] = OrganizationResource::collection($organizations);
+
+        return response()->json($this->makeResponse());
     }
 
     /**
@@ -30,12 +38,14 @@ class OrganizationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param OrganizationStorePostRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(OrganizationStorePostRequest $request)
     {
-        //
+        $organization = Organization::create($request->only(['name']));
+        $this->data['organization'] = new OrganizationResource($organization);
+        return response()->json($this->makeResponse());
     }
 
     /**
@@ -46,7 +56,8 @@ class OrganizationController extends Controller
      */
     public function show($id)
     {
-        //
+        $this->data['organization'] = new OrganizationResource(Organization::find($id));
+        return response()->json($this->makeResponse());
     }
 
     /**
@@ -63,13 +74,15 @@ class OrganizationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param OrganizationUpdatePutRequest $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(OrganizationUpdatePutRequest $request, $id)
     {
-        //
+        $organization = Organization::find($id)->update($request->only(['name']));
+        $this->data['organization'] = new OrganizationResource($organization);
+        return response()->json($this->makeResponse());
     }
 
     /**
@@ -80,6 +93,8 @@ class OrganizationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //TODO: soft delete
+        $this->data['soft_delete'] = false;
+        return response()->json($this->makeResponse());
     }
 }

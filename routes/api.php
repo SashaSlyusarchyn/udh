@@ -13,16 +13,20 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::group(['prefix' => 'users'], function () {
     Route::post('login', 'Api\Auth\AuthController@login');
     Route::post('register', 'Api\Auth\AuthController@register');
     Route::post('refresh', 'Api\Auth\AuthController@refresh')->middleware('jwt.refresh');
 });
 
-Route::resource('organizations', 'Api\OrganizationController')->middleware('jwt.auth');
+Route::get('organizations', 'Api\OrganizationController@index');
+Route::post('organizations', 'Api\OrganizationController@store');
+Route::get('organizations/{id}', 'Api\OrganizationController@show')
+    ->where(['id' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}']);
+Route::put('organizations/{id}', 'Api\OrganizationController@update')
+    ->where(['id' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}']);
+Route::delete('organizations/{id}', 'Api\OrganizationController@destroy')
+    ->where(['id' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}']);
 
-Route::post('files', 'Api\FileController@');
+
+Route::post('files', 'Api\FileController@store');
