@@ -22,3 +22,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('register', 'Api\Auth\AuthController@register');
     Route::post('refresh', 'Api\Auth\AuthController@refresh')->middleware('jwt.refresh');
 });
+
+Route::resource('organizations', 'Api\OrganizationController')->middleware('jwt.auth');
+
+Route::post('files', 'Api\FileController@');
