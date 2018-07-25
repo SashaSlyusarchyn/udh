@@ -62,7 +62,12 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-
+        'udh' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/udh/files'),
+            'url' => env('APP_URL').'/',
+            'visibility' => 'public',
+        ],
     ],
 
 ];

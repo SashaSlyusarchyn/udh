@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api\Organization;
 
+use App\Exceptions\ValidationFailedException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrganizationUpdatePutRequest extends FormRequest
@@ -13,7 +15,7 @@ class OrganizationUpdatePutRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +26,26 @@ class OrganizationUpdatePutRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|string|unique:organizations'
         ];
+    }
+
+    /**
+     * @param Validator $validator
+     * @throws ValidationFailedException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = [];
+        foreach ($validator->errors()->messages() as $key => $val) {
+            $error = [];
+            foreach ($val as $item) {
+                $error['code'] = 1;
+                $error['target'] = $key;
+                $error['message'] = $item;
+                $errors[] = $error;
+            }
+        }
+        throw new ValidationFailedException(1, 'Validation error', $errors, 200);
     }
 }

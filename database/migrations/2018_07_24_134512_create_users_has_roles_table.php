@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFilesTable extends Migration
+class CreateUsersHasRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateFilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('files', function (Blueprint $table) {
-            $table->uuid('id')->unique();
-            $table->primary('id');
+        Schema::create('users_has_roles', function (Blueprint $table) {
+            $table->uuid('id');
             $table->uuid('users_id');
-            $table->string('original_name');
-            $table->string('hash_name');
-            $table->boolean('active')->default(true);
+            $table->uuid('roles_id');
             $table->timestamps();
 
             $table->foreign('users_id')->references('id')->on('users');
+            $table->foreign('roles_id')->references('id')->on('roles');
         });
     }
 
@@ -33,6 +31,6 @@ class CreateFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('users_has_roles');
     }
 }

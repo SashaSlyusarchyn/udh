@@ -12,6 +12,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $organizations = \App\Organization::all();
+        $roles = \App\Role::all();
         $users = [
             [
                 'organizations_id' => $organizations->random(1)->first()->id,
@@ -32,7 +33,9 @@ class UsersTableSeeder extends Seeder
                 'password' => bcrypt('password')
             ]
         ];
-        foreach ($users as $user)
-            \App\User::create($user);
+        foreach ($users as $user) {
+            $newUser = \App\User::create($user);
+            $newUser->roles()->attach([$roles->random(1)->first()->id => ['id' => uniqid()]]);
+        }
     }
 }

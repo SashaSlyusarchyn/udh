@@ -5,20 +5,14 @@ namespace App;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 
-class File extends Model
+class Role extends Model
 {
     use Uuids;
 
     public $incrementing = false;
 
     protected $fillable = [
-        'original_name',
-        'hash_name',
+        'name',
+        'active'
     ];
-
-    public function user()
-    {
-        return $this->hasOne(User::class, 'id', 'users_id');
-    }
-
 }

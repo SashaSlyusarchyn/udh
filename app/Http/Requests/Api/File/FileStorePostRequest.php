@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api\Organization;
+namespace App\Http\Requests\Api\File;
 
 use App\Exceptions\ValidationFailedException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrganizationStorePostRequest extends FormRequest
+class FileStorePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,8 +26,7 @@ class OrganizationStorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|unique:organizations',
-            'description' => 'required|string',
+            'file' => 'required|file|max:1024000'
         ];
     }
 

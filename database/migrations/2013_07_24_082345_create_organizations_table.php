@@ -17,6 +17,7 @@ class CreateOrganizationsTable extends Migration
             $table->uuid('id')->unique();
             $table->primary('id');
             $table->string('name');
+            $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

@@ -8,6 +8,11 @@ use App\Http\Resources\Organization\OrganizationResource;
 use App\Organization;
 use App\Http\Controllers\Controller;
 
+/**
+ * @resource Organization
+ * Methods for working with organizations
+ * @package App\Http\Controllers\Api->id
+ */
 class OrganizationController extends Controller
 {
     /**
@@ -57,7 +62,7 @@ class OrganizationController extends Controller
     public function show($id)
     {
         $this->data['organization'] = new OrganizationResource(Organization::find($id));
-        return response()->json($this->makeResponse());
+        return response()->json($this->makeResponse());name
     }
 
     /**

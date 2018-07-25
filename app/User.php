@@ -32,8 +32,23 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function roles()
+    {
+        return $this->belongsToMany(
+            Role::class,
+            'users_has_roles',
+            'users_id',
+            'roles_id'
+        );
+    }
+
     public function organization()
     {
         return $this->hasOne(Organization::class, 'id', 'organizations_id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'users_id', 'id');
     }
 }

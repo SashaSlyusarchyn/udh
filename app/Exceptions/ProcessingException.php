@@ -21,7 +21,6 @@ class ProcessingException extends Exception
     public function render($request)
     {
         return response()->json([
-            'data' => null,
             'isError' => true,
             'errors' => [
                 [

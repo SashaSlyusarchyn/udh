@@ -11,6 +11,11 @@ class Organization extends Model
 
     public $incrementing = false;
 
+    protected $fillable = [
+        'name',
+        'description'
+    ];
+
     public function users()
     {
         return $this->hasMany(User::class, 'organizations_id', 'id');

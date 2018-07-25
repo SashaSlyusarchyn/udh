@@ -24,6 +24,7 @@ class AuthController extends Controller
         try {
             if (auth()->attempt($request->only(['email', 'password']))) {
                 $user = tap(auth()->user(), function ($user) {
+                    $user->roles;
                     $user->organization;
                 });
 
@@ -73,7 +74,7 @@ class AuthController extends Controller
             ];
             return response()->json($this->makeResponse(), 200);
         } catch (\Exception $exception) {
-            throw new ProcessingException(5, 'Registration error', ['message'=>$exception->getMessage()], 200);
+            throw new ProcessingException(5, 'Registration error', [], 200);
         }
     }
 
