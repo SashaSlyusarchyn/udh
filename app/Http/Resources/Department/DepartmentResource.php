@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Organization;
+namespace App\Http\Resources\Department;
 
+use App\Http\Resources\Organization\OrganizationResource;
 use Illuminate\Http\Resources\Json\Resource;
 
-class OrganizationResource extends Resource
+class DepartmentResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -18,6 +19,7 @@ class OrganizationResource extends Resource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'organization' => new OrganizationResource($this->organization)
         ];
     }
 }

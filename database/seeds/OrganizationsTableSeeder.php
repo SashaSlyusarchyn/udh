@@ -11,18 +11,11 @@ class OrganizationsTableSeeder extends Seeder
      */
     public function run()
     {
-        $organizations = [
-            [
-                'name' => 'Organization 1'
-            ],
-            [
-                'name' => 'Organization 2'
-            ],
-            [
-                'name' => 'Organization 3'
-            ],
-        ];
-        foreach ($organizations as $organization)
-            \App\Organization::create($organization);
+        for ($i = 0; $i < 100; $i++)
+            \App\Organization::create([
+                'name' => 'Organization name '.$i,
+                'description' => 'Organization description',
+                'active' => true,
+            ]);
     }
 }

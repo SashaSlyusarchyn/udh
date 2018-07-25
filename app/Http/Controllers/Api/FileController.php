@@ -6,6 +6,7 @@ use App\Exceptions\ProcessingException;
 use App\File;
 use App\Http\Requests\Api\File\FileIndexGetRequest;
 use App\Http\Requests\Api\File\FileStorePostRequest;
+use App\Http\Resources\File\AvailableFileResource;
 use App\Http\Resources\File\FileResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,27 +22,37 @@ class FileController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param FileIndexGetRequest $request
      * @return \Illuminate\Http\Response
      */
     public function index(FileIndexGetRequest $request)
     {
-        $files = (new File)->newQuery();
-
-        if ($request->has('organizations_id')) {
-            $organizations_id = $request->organizations_id;
-            $files->whereHas('user', function($query) use ($organizations_id) {
-                return $query->where('organizations_id', $organizations_id);
-            });
+        $user = $user = tap(auth()->user(), function ($user) {
+            $user->department->organization;
+        });
+        if ($request->has('available_files')) {
+            $files = File::where('active', true)
+                ->whereHas('users', function ($query) use ($user) {
+                    return $query->where('users.id', $user->id);
+                })
+                ->orWhereHas('departments', function ($query) use ($user) {
+                    return $query->where('departments.id', $user->department->id);
+                })
+                ->orWhereHas('organizations', function ($query) use ($user) {
+                    return $query->where('organizations.id', $user->department->organization->id);
+                })
+                ->paginate(config('api.files_pp'));
+            $this->data['files'] = AvailableFileResource::collection($files);
+        } else {
+            $files = File::with('user')
+                ->whereHas('user', function ($query) use ($user) {
+                    return $query->where('id', $user->id);
+                })
+                ->paginate(config('api.files_pp'));
+            $this->data['files'] = FileResource::collection($files);
         }
-        $files->with('user');
-        $pageFiles = $files->paginate(config('api.files_pp'));
-        $this->data['files'] = FileResource::collection($pageFiles);
 
-        //TODO: pagination (fix on prod)
-//        $this->data['current_page'] = $pageFiles->currentPage();
-//        $this->data['next_page'] = ($pageFiles->currentPage() < $pageFiles->lastPage()) ? $pageFiles->currentPage()+1 : 0;
-//        $this->data['last_page'] = $pageFiles->lastPage();
-        $this->data['total'] = $pageFiles->total();
+        $this->data['total'] = $files->total();
         return response()->json($this->makeResponse());
     }
 
@@ -66,9 +77,10 @@ class FileController extends Controller
         $userFile = $request->file('file');
         $fileName = $userFile->store('', 'udh');
         $user = auth()->user();
-        $file = $user->files()->create([
+        $file = $user->ownFiles()->create([
             'original_name' => $userFile->getClientOriginalName(),
             'hash_name' => $fileName,
+            'active' => true
         ]);
         $this->data['file'] = new FileResource($file);
         return response()->json($this->makeResponse());

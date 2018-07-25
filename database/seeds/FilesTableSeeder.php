@@ -12,24 +12,12 @@ class FilesTableSeeder extends Seeder
     public function run()
     {
         $users = \App\User::all();
-        $files = [
-            [
-                'users_id' => $users->random(1)->first()->id,
-                'original_name' => 'File_1.pdf',
-                'hash_name' => md5('File_1.pdf')
-            ],
-            [
-                'users_id' => $users->random(1)->first()->id,
-                'original_name' => 'File_2.doc',
-                'hash_name' => md5('File_2.doc')
-            ],
-            [
-                'users_id' => $users->random(1)->first()->id,
-                'original_name' => 'File_3.xls',
-                'hash_name' => md5('File_3.xls')
-            ],
-        ];
-        foreach ($files as $file)
-            \App\File::create($file);
+        foreach ($users as $user)
+            for ($i = 0; $i < 30; $i++)
+                $user->ownFiles()->create([
+                    'original_name' => 'File_'.$i.'.pdf',
+                    'hash_name' => md5('File_'.$i.'.pdf'),
+                    'active' => true
+                ]);
     }
 }

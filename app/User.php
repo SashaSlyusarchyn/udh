@@ -39,16 +39,45 @@ class User extends Authenticatable
             'users_has_roles',
             'users_id',
             'roles_id'
-        );
+        )->where('active', true);
     }
 
-    public function organization()
+    public function secretTypes()
     {
-        return $this->hasOne(Organization::class, 'id', 'organizations_id');
+        return $this->belongsToMany(
+            SecretType::class,
+            'users_has_secret_types',
+            'users_id',
+            'secret_types_id'
+        )->where('active', true);
     }
 
-    public function files()
+    public function hasRole($role)
+    {
+        return null !== $this->roles()
+                ->where('role', $role)
+                ->where('active', true)
+                ->first();
+    }
+
+    public function department()
+    {
+        return $this->hasOne(Department::class, 'id', 'departments_id')
+            ->where('active', true);
+    }
+
+    public function ownFiles()
     {
         return $this->hasMany(File::class, 'users_id', 'id');
+    }
+
+    public function availableFiles()
+    {
+        return $this->belongsToMany(
+            File::class,
+            'users_has_files',
+            'users_id',
+            'files_id'
+        );
     }
 }

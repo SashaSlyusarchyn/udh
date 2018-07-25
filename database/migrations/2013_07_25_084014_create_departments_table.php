@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrganizationsTable extends Migration
+class CreateDepartmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,16 @@ class CreateOrganizationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('organizations', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->uuid('id')->unique();
             $table->primary('id');
+            $table->uuid('organizations_id');
             $table->string('name');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->boolean('active')->default(false);
             $table->timestamps();
+
+            $table->foreign('organizations_id')->references('id')->on('organizations');
         });
     }
 
@@ -30,6 +33,6 @@ class CreateOrganizationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('organizations');
+        Schema::dropIfExists('departments');
     }
 }

@@ -69,5 +69,4 @@ return [
             'visibility' => 'public',
         ],
     ],
-
 ];

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Organization;
+namespace App\Http\Resources\SecretType;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class OrganizationResource extends Resource
+class SecretTypeResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,7 @@ class OrganizationResource extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
+            'type' => $this->type
         ];
     }
 }

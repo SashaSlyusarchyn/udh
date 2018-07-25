@@ -13,11 +13,28 @@ class Organization extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'active'
     ];
 
-    public function users()
+    public function departments()
     {
-        return $this->hasMany(User::class, 'organizations_id', 'id');
+        return $this->hasMany(Department::class, 'organizations_id', 'id');
+    }
+
+    public function activeDepartments()
+    {
+        return $this->hasMany(Department::class, 'organizations_id', 'id')
+            ->where('active', true);
+    }
+
+    public function organizationFiles()
+    {
+        return $this->belongsToMany(
+            File::class,
+            'organizations_has_files',
+            'organizations_id',
+            'files_id'
+        );
     }
 }

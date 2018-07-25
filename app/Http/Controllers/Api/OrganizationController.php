@@ -62,7 +62,7 @@ class OrganizationController extends Controller
     public function show($id)
     {
         $this->data['organization'] = new OrganizationResource(Organization::find($id));
-        return response()->json($this->makeResponse());name
+        return response()->json($this->makeResponse());
     }
 
     /**

@@ -11,31 +11,19 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $organizations = \App\Organization::all();
+        $departments = \App\Department::all();
         $roles = \App\Role::all();
-        $users = [
-            [
-                'organizations_id' => $organizations->random(1)->first()->id,
-                'name' => 'User_1',
-                'email' => 'user1@udh.loc',
-                'password' => bcrypt('password')
-            ],
-            [
-                'organizations_id' => $organizations->random(1)->first()->id,
-                'name' => 'User_2',
-                'email' => 'user2@udh.loc',
-                'password' => bcrypt('password')
-            ],
-            [
-                'organizations_id' => $organizations->random(1)->first()->id,
-                'name' => 'User_3',
-                'email' => 'user3@udh.loc',
-                'password' => bcrypt('password')
-            ]
-        ];
-        foreach ($users as $user) {
-            $newUser = \App\User::create($user);
+        $secretTypes = \App\SecretType::all();
+        for ($i = 0; $i < 100; $i++) {
+            $newUser = \App\User::create([
+                'departments_id' => $departments->random(1)->first()->id,
+                'name' => 'User_'.$i,
+                'email' => 'user'.$i.'@udh.loc',
+                'password' => bcrypt('password'),
+                'active' => true
+            ]);
             $newUser->roles()->attach([$roles->random(1)->first()->id => ['id' => uniqid()]]);
+            $newUser->secretTypes()->attach([$secretTypes->random(1)->first()->id => ['id' => uniqid()]]);
         }
     }
 }

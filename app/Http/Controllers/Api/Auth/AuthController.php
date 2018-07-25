@@ -7,6 +7,7 @@ use App\Http\Requests\Api\User\UserLoginPostRequest;
 use App\Http\Requests\Api\User\UserRegisterPostRequest;
 use App\Http\Resources\User\UserResource;
 use App\Organization;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
@@ -23,10 +24,9 @@ class AuthController extends Controller
     public function login(UserLoginPostRequest $request) {
         try {
             if (auth()->attempt($request->only(['email', 'password']))) {
-                $user = tap(auth()->user(), function ($user) {
-                    $user->roles;
-                    $user->organization;
-                });
+                $user = User::with('roles')
+                    ->with('department.organization')
+                    ->find(auth()->user()->id);
 
                 $token = JWTAuth::fromUser($user);
                 $this->data['user'] = new UserResource($user);
