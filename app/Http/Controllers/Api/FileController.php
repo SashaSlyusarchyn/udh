@@ -41,6 +41,7 @@ class FileController extends Controller
                 ->orWhereHas('organizations', function ($query) use ($user) {
                     return $query->where('organizations.id', $user->department->organization->id);
                 })
+                ->orderBy('created_at', 'desc')
                 ->paginate(config('api.files_pp'));
             $this->data['files'] = AvailableFileResource::collection($files);
         } else {
@@ -48,6 +49,7 @@ class FileController extends Controller
                 ->whereHas('user', function ($query) use ($user) {
                     return $query->where('id', $user->id);
                 })
+                ->orderBy('created_at', 'desc')
                 ->paginate(config('api.files_pp'));
             $this->data['files'] = FileResource::collection($files);
         }
@@ -94,7 +96,6 @@ class FileController extends Controller
      */
     public function show($id)
     {
-//        $file = File::with('user')->where('id', $id)->first();
         $file = File::with('user')->find($id);
         $this->data['file'] = new FileResource($file);
         return response()->json($this->makeResponse());
