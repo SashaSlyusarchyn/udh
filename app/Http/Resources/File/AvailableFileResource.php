@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\File;
 
+use App\Http\Resources\SecreLevel\SecretLevelResource;
 use Illuminate\Http\Resources\Json\Resource;
 
 class AvailableFileResource extends Resource
@@ -23,6 +24,7 @@ class AvailableFileResource extends Resource
                 'department' => $this->user->department->name,
                 'organization' => $this->user->department->organization->name,
             ],
+            'secret_level' => new SecretLevelResource($this->secretLevel),
             'created' => (string)$this->updated_at
         ];
     }

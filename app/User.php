@@ -18,9 +18,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'departments_id',
+        'secret_levels_id',
         'name',
         'email',
-        'password'
+        'password',
+        'active'
     ];
 
     /**
@@ -42,20 +45,15 @@ class User extends Authenticatable
         )->where('active', true);
     }
 
-    public function secretTypes()
+    public function secretLevel()
     {
-        return $this->belongsToMany(
-            SecretType::class,
-            'users_has_secret_types',
-            'users_id',
-            'secret_types_id'
-        )->where('active', true);
+        return $this->hasOne(SecretLevel::class,'id','secret_levels_id');
     }
 
     public function hasRole($role)
     {
         return null !== $this->roles()
-                ->where('role', $role)
+                ->where('name', $role)
                 ->where('active', true)
                 ->first();
     }

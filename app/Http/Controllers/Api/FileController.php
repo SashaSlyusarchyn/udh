@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\ProcessingException;
 use App\File;
 use App\Http\Requests\Api\File\FileIndexGetRequest;
+use App\Http\Requests\Api\File\FileSharePostRequest;
 use App\Http\Requests\Api\File\FileStorePostRequest;
 use App\Http\Resources\File\AvailableFileResource;
 use App\Http\Resources\File\FileResource;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +31,9 @@ class FileController extends Controller
     {
         $user = $user = tap(auth()->user(), function ($user) {
             $user->department->organization;
+            $user->secretLevel;
         });
+//        dd($user->secretLevel->level);
         if ($request->has('available_files')) {
             $files = File::where('active', true)
                 ->whereHas('users', function ($query) use ($user) {
@@ -48,6 +52,9 @@ class FileController extends Controller
             $files = File::with('user')
                 ->whereHas('user', function ($query) use ($user) {
                     return $query->where('id', $user->id);
+                })
+                ->whereHas('secretLevel', function ($query) use ($user) {
+                    return $query->where('secret_levels.level', '<=',$user->secretLevel->level);
                 })
                 ->orderBy('created_at', 'desc')
                 ->paginate(config('api.files_pp'));
@@ -98,6 +105,28 @@ class FileController extends Controller
     {
         $file = File::with('user')->find($id);
         $this->data['file'] = new FileResource($file);
+        return response()->json($this->makeResponse());
+    }
+
+    public function share(FileSharePostRequest $request, $id)
+    {
+        $file = File::find($id);
+        try {
+            if ($request->has('user_email')) {
+                $user = User::where('email', $request->user_email)->first();
+                $file->users()->attach([$user->id => ['id' => uniqid()]]);
+            }
+            if ($request->has('departments_id')) {
+                $file->departments()->attach([$request->departments_id => ['id' => uniqid()]]);
+            }
+            if ($request->has('organizations_id')) {
+                $file->organizations()->attach([$request->organizations_id => ['id' => uniqid()]]);
+            }
+        } catch (\Exception $e)
+        {
+            $this->data['shared'] = false;
+        }
+        $this->data['shared'] = true;
         return response()->json($this->makeResponse());
     }
 
@@ -161,11 +190,16 @@ class FileController extends Controller
         } catch (\Exception $e) {
             throw new ProcessingException(1, 'File not found', [], 200);
         }
+        try {
+            $file->users()->detach();
+            $file->departments()->detach();
+            $file->organizations()->detach();
+            $file->delete();
+        } catch (\Exception $e) {
+            throw new ProcessingException(1, 'File not found', [], 200);
+        }
         if (Storage::disk('udh')->exists($file->hash_name)) {
             Storage::disk('udh')->delete($file->hash_name);
-            $file->delete();
-        } else {
-            throw new ProcessingException(1, 'File not found', [], 200);
         }
         $this->data['file_destroyed'] = true;
         return response()->json($this->makeResponse());

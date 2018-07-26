@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\SecretType;
+namespace App\Http\Resources\SecreLevel;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class SecretTypeResource extends Resource
+class SecretLevelResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,7 @@ class SecretTypeResource extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'type' => $this->type
+            'level' => $this->level
         ];
     }
 }

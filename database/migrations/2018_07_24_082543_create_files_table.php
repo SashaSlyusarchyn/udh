@@ -17,12 +17,14 @@ class CreateFilesTable extends Migration
             $table->uuid('id')->unique();
             $table->primary('id');
             $table->uuid('users_id');
+            $table->uuid('secret_levels_id');
             $table->string('original_name');
             $table->string('hash_name');
             $table->boolean('active')->default(false);
             $table->timestamps();
 
             $table->foreign('users_id')->references('id')->on('users');
+            $table->foreign('secret_levels_id')->references('id')->on('secret_levels');
         });
     }
 

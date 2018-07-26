@@ -5,7 +5,7 @@ namespace App;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 
-class SecretType extends Model
+class SecretLevel extends Model
 {
     use Uuids;
 
@@ -13,7 +13,7 @@ class SecretType extends Model
 
     protected $fillable = [
         'name',
-        'type',
+        'level',
         'active'
     ];
 }

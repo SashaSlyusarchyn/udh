@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->uuid('id')->unique();
             $table->primary('id');
             $table->uuid('departments_id');
+            $table->uuid('secret_levels_id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
@@ -25,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->timestamps();
 
             $table->foreign('departments_id')->references('id')->on('departments');
+            $table->foreign('secret_levels_id')->references('id')->on('secret_levels');
         });
     }
 

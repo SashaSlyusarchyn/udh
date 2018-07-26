@@ -4,7 +4,7 @@ namespace App\Http\Resources\User;
 
 use App\Http\Resources\Department\DepartmentResource;
 use App\Http\Resources\Role\RoleResource;
-use App\Http\Resources\SecretType\SecretTypeResource;
+use App\Http\Resources\SecreLevel\SecretLevelResource;
 use Illuminate\Http\Resources\Json\Resource;
 
 class UserResource extends Resource
@@ -23,7 +23,7 @@ class UserResource extends Resource
             'email' => $this->email,
             'roles' => RoleResource::collection($this->roles),
             'department' => new DepartmentResource($this->department),
-            'secret_types' => SecretTypeResource::collection($this->secretTypes)
+            'secret_level' => new SecretLevelResource($this->secretLevel)
         ];
     }
 }

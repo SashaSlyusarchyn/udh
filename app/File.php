@@ -49,4 +49,9 @@ class File extends Model
             'files_id',
             'organizations_id');
     }
+
+    public function secretLevel()
+    {
+        return $this->hasOne(SecretLevel::class,'id','secret_levels_id');
+    }
 }

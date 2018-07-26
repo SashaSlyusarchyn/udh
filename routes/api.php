@@ -14,6 +14,13 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['prefix' => 'users'], function () {
+
+    Route::get('/', 'Api\UserController@index')->middleware('jwt.auth');
+
+    Route::put('/{id}', 'Api\UserController@update')->middleware('jwt.auth');
+
+    Route::put('/password', 'Api\UserController@updatePassword')->middleware('jwt.auth');
+
     Route::post('login', 'Api\Auth\AuthController@login');
 
     Route::post('register', 'Api\Auth\AuthController@register');
@@ -52,6 +59,10 @@ Route::post('files', 'Api\FileController@store')
     ->middleware('jwt.auth');
 
 Route::get('files/{id}', 'Api\FileController@show')
+    ->where(['id' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'])
+    ->middleware('jwt.auth');
+
+Route::post('files/share/{id}', 'Api\FileController@share')
     ->where(['id' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'])
     ->middleware('jwt.auth');
 

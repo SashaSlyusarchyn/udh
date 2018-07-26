@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
             OrganizationsTableSeeder::class,
             DepartmentsTableSeeder::class,
             RolesTableSeeder::class,
-            SecretTypesTableSeeder::class,
+            SecretLevelsTableSeeder::class,
             UsersTableSeeder::class,
             FilesTableSeeder::class,
-            UsersHasFilesTableSeeder::class
+            UsersHasFilesTableSeeder::class,
         ]);
     }
 }
